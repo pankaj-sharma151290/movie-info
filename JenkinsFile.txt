@@ -1,0 +1,15 @@
+node{
+
+	stage('Code checkout'){
+		git 'https://github.com/javahometech/my-app'
+	}
+	stage('create jar'){
+		
+		def mvnHome = tool name: 'Maven-3', type: 'maven'
+		def mvnCMD = "{$mvnHome}/bin/mvn"
+		sh "${mvnCMD} clean install"
+
+	}
+
+
+}
