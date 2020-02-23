@@ -7,7 +7,7 @@ pipeline {
 
 		stage('create jar'){
 			steps{
-				sh 'mvn clean install -DskipTests=true'
+				bat 'mvn clean install -DskipTests=true'
 			}
 		}
 	}	
