@@ -9,6 +9,11 @@ pipeline {
 				bat 'mvn clean install -DskipTests=true'
 			}
 		}
+		stage('Build Docker Image'){
+			steps{
+				bat "docker build . -t pankajsharma151290/movie-info-jenkins:${LatestTag}"
+			}
+		}
 	}	
 }
 
