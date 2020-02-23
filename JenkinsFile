@@ -1,5 +1,4 @@
 node{
-
 	stage('Code checkout'){
 		git 'https://github.com/pankaj-sharma151290/movie-info'
 	}
@@ -18,5 +17,4 @@ node{
 	stage('Run Docker container'){
 		bat 'docker run --name movie-info -d -p 8180:8180 movie-info-jenkins:2.0.0'
 	}
-	
 }
