@@ -1,0 +1,30 @@
+pipeline{
+	agent any
+	environment{
+		LatestTag= getLatestBuildNo()
+	}
+	stages{
+		stage('create jar'){
+			bat 'mvn clean install -DskipTests=true'
+		}
+		stage('Build Docker Image'){
+			bat "docker build . -t pankajsharma151290/movie-info-jenkins:${LatestTag}"
+		}
+		stage('Push Docker Image to Docker Hub'){
+			withCredentials([string(credentialsId: 'docker-hub-pwd', variable: 'dockerHubPwd')]) {
+			bat "docker login -u pankajsharma151290 -p ${dockerHubPwd}"
+		}
+			bat 'docker push pankajsharma151290/movie-info-jenkins:2.0.0'
+		}
+		stage('Run Docker container'){
+			bat 'docker run --name movie-info -d -p 8180:8180 movie-info-jenkins:2.0.0'
+		}
+	}
+	
+	
+}
+
+def getLatestBuildNo(){
+	def tag = sh script: 'git rev-parse HEAD', returnStdout: true
+	return tag
+}

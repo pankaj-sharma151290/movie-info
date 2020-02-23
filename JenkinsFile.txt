@@ -1,15 +1,22 @@
 node{
 
 	stage('Code checkout'){
-		git 'https://github.com/javahometech/my-app'
+		git 'https://github.com/pankaj-sharma151290/movie-info'
 	}
 	stage('create jar'){
-		
-		def mvnHome = tool name: 'Maven-3', type: 'maven'
-		def mvnCMD = "{$mvnHome}/bin/mvn"
-		sh "${mvnCMD} clean install"
-
+		bat 'mvn clean install -DskipTests=true'
 	}
-
-
+	stage('Build Docker Image'){
+		bat 'docker build -t pankajsharma151290/movie-info-jenkins:2.0.0 .'
+	}
+	stage('Push Docker Image to Docker Hub'){
+		withCredentials([string(credentialsId: 'docker-hub-pwd', variable: 'dockerHubPwd')]) {
+			bat "docker login -u pankajsharma151290 -p ${dockerHubPwd}"
+		}
+		bat 'docker push pankajsharma151290/movie-info-jenkins:2.0.0'
+	}
+	stage('Run Docker container'){
+		bat 'docker run --name movie-info -d -p 8180:8180 movie-info-jenkins:2.0.0'
+	}
+	
 }
